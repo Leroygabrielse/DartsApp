@@ -27,9 +27,7 @@ export default class Game501 extends React.Component {
             playerTurn: 1
         }
     }
-    enterScore2 = () => {
-        //work with a class of class Player etc.
-    }
+
     enterScore = () => {
         switch (this.state.playerTurn) {
             case 1:
@@ -42,16 +40,16 @@ export default class Game501 extends React.Component {
                     this.setState({ scoreP1: this.state.scoreP1 - this.state.scoreInput })
                     if (this.state.scoreP1 - this.state.scoreInput === 0) {
                         //Leg won
-                        
+
                         this.setState({ scoreP1: 501 })
                         this.setState({ scoreP2: 501 })
                         this.setState({ scoreInput: 0 })
                         this.setState({ legsP1: this.state.legsP1 + 1 })
 
-                        switch(this.state.bestOfFirstTo){
+                        switch (this.state.bestOfFirstTo) {
                             case 'BEST OF':
                                 if (this.state.legsP1 > (this.state.numberOfLegsToWin / 2)) {
-                                    Alert.alert("Notification","GameShot and the Match!",[{text: "Finish", onPress: ()=>this.props.navigation.navigate("pre Game")}])
+                                    Alert.alert("Notification", "GameShot and the Match!", [{ text: "Finish", onPress: () => this.props.navigation.navigate("pre Game") }])
                                 } else {
                                     Alert.alert("Notification", "GameShot!")
                                     console.log(this.state.legsP1)
@@ -59,7 +57,7 @@ export default class Game501 extends React.Component {
                                 break;
                             case 'FIRST TO':
                                 if (this.state.legsP1 == this.state.numberOfLegsToWin) {
-                                    Alert.alert("Notification","GameShot and the Match!",[{text: "Finish", onPress: ()=>this.props.navigation.navigate("pre Game")}])
+                                    Alert.alert("Notification", "GameShot and the Match!", [{ text: "Finish", onPress: () => this.props.navigation.navigate("pre Game") }])
                                 } else {
                                     Alert.alert("Notification", "GameShot!")
                                     console.log(this.state.legsP1)
@@ -88,13 +86,13 @@ export default class Game501 extends React.Component {
                     this.setState({ scoreP2: this.state.scoreP2 - this.state.scoreInput })
                     if (this.state.scoreP2 - this.state.scoreInput === 0) {
                         //Leg won
-                        
+
                         this.setState({ scoreP1: 501 })
                         this.setState({ scoreP2: 501 })
                         this.setState({ scoreInput: 0 })
                         this.setState({ legsP2: this.state.legsP2 + 1 })
                         if (this.state.legsP2 == this.state.numberOfLegsToWin) {
-                            Alert.alert("Notification","GameShot and the Match!",[{text: "Finish", onPress: ()=>this.props.navigation.navigate("pre Game")}])
+                            Alert.alert("Notification", "GameShot and the Match!", [{ text: "Finish", onPress: () => this.props.navigation.navigate("pre Game") }])
                         }
                         else {
                             Alert.alert("Notification", "GameShot!")
@@ -128,15 +126,15 @@ export default class Game501 extends React.Component {
         }
     }
     removeNumber = () => {
-        var str = ""+this.state.scoreInput
-        var res = str.substring(0,str.length - 1)
-        if (res.length > 0){
-            this.setState({scoreInput: res})
+        var str = "" + this.state.scoreInput
+        var res = str.substring(0, str.length - 1)
+        if (res.length > 0) {
+            this.setState({ scoreInput: res })
         }
         else {
-            this.setState({scoreInput: 0})
+            this.setState({ scoreInput: 0 })
         }
-        
+
     }
     undoScore = () => {
         console.log("undo Score")
@@ -144,11 +142,11 @@ export default class Game501 extends React.Component {
 
     render() {
 
-const {player1} = this.props.route.params
-const {player2} = this.props.route.params
-const {numberOfLegs} = this.props.route.params
-const {bestOfFirstTo} = this.props.route.params
-const {legsOrSets} = this.props.route.params
+        const { player1 } = this.props.route.params
+        const { player2 } = this.props.route.params
+        const { numberOfLegs } = this.props.route.params
+        const { bestOfFirstTo } = this.props.route.params
+        const { legsOrSets } = this.props.route.params
 
         return (
             <View style={styles.container}>
@@ -156,7 +154,7 @@ const {legsOrSets} = this.props.route.params
                 <View style={styles.topHalf}>
                     <View style={styles.withMargin}>
                         <View style={styles.gameVariant}>
-                            <Text style={styles.gameVariantText}>{bestOfFirstTo+" "+numberOfLegs+ " "+ legsOrSets}</Text></View>
+                            <Text style={styles.gameVariantText}>{bestOfFirstTo + " " + numberOfLegs + " " + legsOrSets}</Text></View>
                         <View style={this.state.p1style2}>
                             <View style={styles.score}>
                                 <Text>{player1}</Text>
@@ -189,7 +187,7 @@ const {legsOrSets} = this.props.route.params
                 <View style={styles.bottomHalf}>
                     <View style={styles.scoreInputBar}>
                         <TouchableOpacity
-                        onPress={this.undoScore}
+                            onPress={this.undoScore}
                             activeOpacity={.7}
                             style={styles.undoButton}>
                             <Image
@@ -201,7 +199,7 @@ const {legsOrSets} = this.props.route.params
                             {this.state.scoreInput}
                         </Text>
                         <TouchableOpacity
-                            onPress={this.enterScore}
+                            onPress={this.enterScore2}
                             activeOpacity={.7}
                             style={styles.enterButton}>
                             <Image

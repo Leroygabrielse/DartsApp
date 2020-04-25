@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image, Alert } from 'react-native';
 import colors from '../assets/Colors'
 import { TextInput } from 'react-native-gesture-handler';
 
@@ -11,7 +11,7 @@ export default class Game501 extends React.Component {
         this.state = {
             player1: '',
             player2: '',
-            numberOfLegs: 3,
+            numberOfLegs: 0,
             bestOfFirstTo: 'FIRST TO',
             legsOrSets: 'SETS',
             buttonStyleFirst: styles.firstToButtonsActive,
@@ -28,7 +28,15 @@ export default class Game501 extends React.Component {
         }
     }
     startGame = () => {
-        this.props.navigation.navigate("501", { player1: this.state.player1, player2: this.state.player2, numberOfLegs: this.state.numberOfLegs, bestOfFirstTo: this.state.bestOfFirstTo, legsOrSets: this.state.legsOrSets })
+        if (this.state.player1 == '' | this.state.player1 == '' | this.state.numberOfLegs == 0) {
+            Alert.alert("Warning", "Please fill in all the fields")
+        }
+        else if (this.state.numberOfLegs > 30){
+            Alert.alert("Whaaaaat1?","Do you really want to play this many legs or sets?",[{text: "No"},{text: "Yeeees", onPress: ()=>this.props.navigation.navigate("501", { player1: this.state.player1, player2: this.state.player2, numberOfLegs: this.state.numberOfLegs, bestOfFirstTo: this.state.bestOfFirstTo, legsOrSets: this.state.legsOrSets })}])
+        }
+        else {
+            this.props.navigation.navigate("501", { player1: this.state.player1, player2: this.state.player2, numberOfLegs: this.state.numberOfLegs, bestOfFirstTo: this.state.bestOfFirstTo, legsOrSets: this.state.legsOrSets })
+        }
     }
     makeActive = (button) => {
         switch (button) {
@@ -37,33 +45,33 @@ export default class Game501 extends React.Component {
                 this.setState({ textStyleBest: styles.firstToTextActive })
                 this.setState({ buttonStyleFirst: styles.firstToButtonsInactive })
                 this.setState({ textStyleFirst: styles.firstToTextInactive })
-                this.setState({bestOfFirstTo: "BEST OF"})
+                this.setState({ bestOfFirstTo: "BEST OF" })
                 break;
             case "firstto":
                 this.setState({ buttonStyleBest: styles.bestOfButtonsInactive })
                 this.setState({ textStyleBest: styles.firstToTextInactive })
                 this.setState({ buttonStyleFirst: styles.firstToButtonsActive })
                 this.setState({ textStyleFirst: styles.firstToTextActive })
-                this.setState({bestOfFirstTo: "FIRST TO"})
+                this.setState({ bestOfFirstTo: "FIRST TO" })
                 break;
             case "sets":
                 this.setState({ buttonStyleSets: styles.bestOfButtonsActive })
                 this.setState({ buttonStyleLegs: styles.firstToButtonsInactive })
                 this.setState({ textStyleSets: styles.firstToTextActive })
                 this.setState({ textStyleLegs: styles.firstToTextInactive })
-                this.setState({legsOrSets: "SETS"})
+                this.setState({ legsOrSets: "SETS" })
                 break;
             case "legs":
                 this.setState({ buttonStyleSets: styles.bestOfButtonsInactive })
                 this.setState({ buttonStyleLegs: styles.firstToButtonsActive })
                 this.setState({ textStyleSets: styles.firstToTextInactive })
                 this.setState({ textStyleLegs: styles.firstToTextActive })
-                this.setState({legsOrSets: "LEGS"})
+                this.setState({ legsOrSets: "LEGS" })
                 break;
         }
     }
     changeScore = () => {
-       console.log("Change Score method has to be made yet")
+        console.log("Change Score method has to be made yet")
     }
     render() {
         return (
@@ -73,7 +81,7 @@ export default class Game501 extends React.Component {
                     <Text style={styles.gameText}>501</Text>
                     <View style={styles.changeButtonContainer}>
                         <TouchableOpacity
-                        onPress={this.changeScore}
+                            onPress={this.changeScore}
                             style={styles.changeButton}>
                             <Image
                                 style={styles.containImage}
