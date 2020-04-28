@@ -7,7 +7,6 @@ const STATUSBARHEIGHT = Platform.OS === 'ios' ? 20 : 0
 export default class Game501 extends React.Component {
     constructor(props) {
         super(props)
-        this.enterScore2=this.enterScore2.bind(this)
         this.state = {
             scoreInput: 0,
             playerName1: "Leroy",
@@ -28,22 +27,32 @@ export default class Game501 extends React.Component {
             playerTurn: 1
         }
     }
-    handleScore=(score,playerScore)=>{
+    handleLegEnding =()=>{
+
+    }
+    handleScore=(score,playerScore, legScore)=>{
         if (score > 180 | score > playerScore | score == 166 | score == 169 | score == 172 | score == 173 | score == 175 | score == 176 | score == 178 | score == 179) {
             Alert.alert("Warning", "Not a possible score!")
             this.setState({ scoreInput: 0 })
+            return playerScore
         }
         else {
-            
+            if ((playerScore - score) == 0){
+                this.handleLegEnding(legScore)
+            } 
+            else {
+                return playerScore - score
+            }
         }
     }
-    enterScore2 = () => {
+    enterScore = () => {
         //work with a class of class Player etc.
         if(this.state.playerTurn == 1){
-            this.handleScore(this.state.scoreInput,this.state.scoreP1)
+            this.setState({scoreP1: this.handleScore(this.state.scoreInput,this.state.scoreP1,this.state.legsP1)})
+
         }
         else if (this.playerTurn == 2){
-            this.handleScore(this.state.scoreInput,this.state.scoreP2)
+            this.setState({scoreP2: this.handleScore(this.state.scoreInput,this.state.scoreP2,this.state.legsP2)})
         }
     }
     
@@ -134,7 +143,7 @@ const {legsOrSets} = this.props.route.params
                             {this.state.scoreInput}
                         </Text>
                         <TouchableOpacity
-                            onPress={this.enterScore2}
+                            onPress={this.enterScore}
                             activeOpacity={.7}
                             style={styles.enterButton}>
                             <Image
