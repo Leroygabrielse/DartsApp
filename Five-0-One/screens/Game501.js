@@ -7,6 +7,7 @@ const STATUSBARHEIGHT = Platform.OS === 'ios' ? 20 : 0
 export default class Game501 extends React.Component {
     constructor(props) {
         super(props)
+        this.enterScore2=this.enterScore2.bind(this)
         this.state = {
             scoreInput: 0,
             playerName1: "Leroy",
@@ -27,93 +28,25 @@ export default class Game501 extends React.Component {
             playerTurn: 1
         }
     }
-    enterScore2 = () => {
-        //work with a class of class Player etc.
-    }
-    enterScore = () => {
-        switch (this.state.playerTurn) {
-            case 1:
-
-                if (this.state.scoreInput > 180 | this.state.scoreInput > this.state.scoreP1) {
-                    Alert.alert("Notification", "Not a possible score!")
-                    this.setState({ scoreInput: 0 })
-                }
-                else {
-                    this.setState({ scoreP1: this.state.scoreP1 - this.state.scoreInput })
-                    if (this.state.scoreP1 - this.state.scoreInput === 0) {
-                        //Leg won
-                        
-                        this.setState({ scoreP1: 501 })
-                        this.setState({ scoreP2: 501 })
-                        this.setState({ scoreInput: 0 })
-                        this.setState({ legsP1: this.state.legsP1 + 1 })
-
-                        switch(this.state.bestOfFirstTo){
-                            case 'BEST OF':
-                                if (this.state.legsP1 > (this.state.numberOfLegsToWin / 2)) {
-                                    Alert.alert("Notification","GameShot and the Match!",[{text: "Finish", onPress: ()=>this.props.navigation.navigate("pre Game")}])
-                                } else {
-                                    Alert.alert("Notification", "GameShot!")
-                                    console.log(this.state.legsP1)
-                                }
-                                break;
-                            case 'FIRST TO':
-                                if (this.state.legsP1 == this.state.numberOfLegsToWin) {
-                                    Alert.alert("Notification","GameShot and the Match!",[{text: "Finish", onPress: ()=>this.props.navigation.navigate("pre Game")}])
-                                } else {
-                                    Alert.alert("Notification", "GameShot!")
-                                    console.log(this.state.legsP1)
-                                }
-                                break;
-                        }
-                    }
-                    else {
-                        this.setState({ scoreInput: 0 })
-                        this.setState({ playerTurn: this.state.playerTurn + 1 })
-                        this.setState({ p1style: styles.matchScoreTextInactive })
-                        this.setState({ p1style2: styles.scoresPlayersInactive })
-                        this.setState({ p2style: styles.matchScoreTextActive })
-                        this.setState({ p2style2: styles.scoresPlayersActive })
-                    }
-                }
-
-
-                break;
-            case 2:
-                if (this.state.scoreInput > 180 | this.state.scoreInput > this.state.scoreP2) {
-                    Alert.alert("Notificatie", "Ongeldige score!")
-                    this.setState({ scoreInput: 0 })
-                }
-                else {
-                    this.setState({ scoreP2: this.state.scoreP2 - this.state.scoreInput })
-                    if (this.state.scoreP2 - this.state.scoreInput === 0) {
-                        //Leg won
-                        
-                        this.setState({ scoreP1: 501 })
-                        this.setState({ scoreP2: 501 })
-                        this.setState({ scoreInput: 0 })
-                        this.setState({ legsP2: this.state.legsP2 + 1 })
-                        if (this.state.legsP2 == this.state.numberOfLegsToWin) {
-                            Alert.alert("Notification","GameShot and the Match!",[{text: "Finish", onPress: ()=>this.props.navigation.navigate("pre Game")}])
-                        }
-                        else {
-                            Alert.alert("Notification", "GameShot!")
-                        }
-                    }
-                    else {
-                        this.setState({ scoreInput: 0 })
-                        this.setState({ playerTurn: this.state.playerTurn - 1 })
-                        this.setState({ p2style: styles.matchScoreTextInactive })
-                        this.setState({ p2style2: styles.scoresPlayersInactive })
-                        this.setState({ p1style: styles.matchScoreTextActive })
-                        this.setState({ p1style2: styles.scoresPlayersActive })
-                    }
-                }
-
-
-                break;
+    handleScore=(score,playerScore)=>{
+        if (score > 180 | score > playerScore | score == 166 | score == 169 | score == 172 | score == 173 | score == 175 | score == 176 | score == 178 | score == 179) {
+            Alert.alert("Warning", "Not a possible score!")
+            this.setState({ scoreInput: 0 })
+        }
+        else {
+            
         }
     }
+    enterScore2 = () => {
+        //work with a class of class Player etc.
+        if(this.state.playerTurn == 1){
+            this.handleScore(this.state.scoreInput,this.state.scoreP1)
+        }
+        else if (this.playerTurn == 2){
+            this.handleScore(this.state.scoreInput,this.state.scoreP2)
+        }
+    }
+    
     addNumber = (number) => {
         if (this.state.scoreInput == 0) {
             this.setState({ scoreInput: number })
@@ -201,7 +134,7 @@ const {legsOrSets} = this.props.route.params
                             {this.state.scoreInput}
                         </Text>
                         <TouchableOpacity
-                            onPress={this.enterScore}
+                            onPress={this.enterScore2}
                             activeOpacity={.7}
                             style={styles.enterButton}>
                             <Image
@@ -431,3 +364,90 @@ const styles = StyleSheet.create({
 
 
 });
+
+/*
+enterScore = () => {
+        switch (this.state.playerTurn) {
+            case 1:
+
+                if (this.state.scoreInput > 180 | this.state.scoreInput > this.state.scoreP1) {
+                    Alert.alert("Notification", "Not a possible score!")
+                    this.setState({ scoreInput: 0 })
+                }
+                else {
+                    this.setState({ scoreP1: this.state.scoreP1 - this.state.scoreInput })
+                    if (this.state.scoreP1 - this.state.scoreInput === 0) {
+                        //Leg won
+                        
+                        this.setState({ scoreP1: 501 })
+                        this.setState({ scoreP2: 501 })
+                        this.setState({ scoreInput: 0 })
+                        this.setState({ legsP1: this.state.legsP1 + 1 })
+
+                        switch(this.state.bestOfFirstTo){
+                            case 'BEST OF':
+                                if (this.state.legsP1 > (this.state.numberOfLegsToWin / 2)) {
+                                    Alert.alert("Notification","GameShot and the Match!",[{text: "Finish", onPress: ()=>this.props.navigation.navigate("pre Game")}])
+                                } else {
+                                    Alert.alert("Notification", "GameShot!")
+                                    console.log(this.state.legsP1)
+                                }
+                                break;
+                            case 'FIRST TO':
+                                if (this.state.legsP1 == this.state.numberOfLegsToWin) {
+                                    Alert.alert("Notification","GameShot and the Match!",[{text: "Finish", onPress: ()=>this.props.navigation.navigate("pre Game")}])
+                                } else {
+                                    Alert.alert("Notification", "GameShot!")
+                                    console.log(this.state.legsP1)
+                                }
+                                break;
+                        }
+                    }
+                    else {
+                        this.setState({ scoreInput: 0 })
+                        this.setState({ playerTurn: this.state.playerTurn + 1 })
+                        this.setState({ p1style: styles.matchScoreTextInactive })
+                        this.setState({ p1style2: styles.scoresPlayersInactive })
+                        this.setState({ p2style: styles.matchScoreTextActive })
+                        this.setState({ p2style2: styles.scoresPlayersActive })
+                    }
+                }
+
+
+                break;
+            case 2:
+                if (this.state.scoreInput > 180 | this.state.scoreInput > this.state.scoreP2) {
+                    Alert.alert("Notificatie", "Ongeldige score!")
+                    this.setState({ scoreInput: 0 })
+                }
+                else {
+                    this.setState({ scoreP2: this.state.scoreP2 - this.state.scoreInput })
+                    if (this.state.scoreP2 - this.state.scoreInput === 0) {
+                        //Leg won
+                        
+                        this.setState({ scoreP1: 501 })
+                        this.setState({ scoreP2: 501 })
+                        this.setState({ scoreInput: 0 })
+                        this.setState({ legsP2: this.state.legsP2 + 1 })
+                        if (this.state.legsP2 == this.state.numberOfLegsToWin) {
+                            Alert.alert("Notification","GameShot and the Match!",[{text: "Finish", onPress: ()=>this.props.navigation.navigate("pre Game")}])
+                        }
+                        else {
+                            Alert.alert("Notification", "GameShot!")
+                        }
+                    }
+                    else {
+                        this.setState({ scoreInput: 0 })
+                        this.setState({ playerTurn: this.state.playerTurn - 1 })
+                        this.setState({ p2style: styles.matchScoreTextInactive })
+                        this.setState({ p2style2: styles.scoresPlayersInactive })
+                        this.setState({ p1style: styles.matchScoreTextActive })
+                        this.setState({ p1style2: styles.scoresPlayersActive })
+                    }
+                }
+
+
+                break;
+        }
+    }
+    */

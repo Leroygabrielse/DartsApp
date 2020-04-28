@@ -6,6 +6,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Game501 from './../screens/Game501'
 import statsScreen from './../screens/statsScreen'
 import PreGame from './../screens/preGame'
+import Test from './../screens/Test'
+import Test2 from './../screens/Test2'
 
 const mainStack = createStackNavigator();
 
