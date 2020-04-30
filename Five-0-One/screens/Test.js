@@ -1,99 +1,49 @@
-import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
-import colors from '../assets/Colors'
-import { TextInput } from 'react-native-gesture-handler';
+import React, { Component } from 'react'
+import { StyleSheet, Text, View } from 'react-native'
+import { TextInput, TouchableOpacity } from 'react-native-gesture-handler'
 
-export default class Game501 extends React.Component {
+export default class Test extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            value: 1,
-            styleVal: styles.div1Active,
-            styleVal2: styles.div1Inactive
+            name_player1: '',
+            name_player2: '',
+            amountOfLegs: 3,
+            game_variant: 'FIRST TO ',
+            game_variant2: ' LEGS'
         }
     }
-    
-    testFunc = () => {
-        switch (this.state.value) {
-            case 1:
-                this.nextFunc()
-                this.setState({ value: this.state.value + 1 })
-                break;
 
-            case 2:
-                this.otherFunc()
-                this.setState({ value: this.state.value - 1 })
-                break;
-        }
-    }
-    nextFunc = () => {
-        console.log("next")
-
-    }
-    otherFunc = () => {
-        console.log("other")
-    }
-
-
-    statePrint = () => {
-        const keys = Object.keys(this.state)
-        console.log(keys[0])
-    }
-
-    changeKey = () => {
-        const keys = Object.keys(this.state)
-        keys[1] = "styleVal2"
-        keys[2] = "styleVal"
-        console.log(keys[2])
-        console.log(this.state.styleVal)
-    }
     render() {
         return (
             <View style={styles.container}>
-                <View style = {this.state.styleVal}><Text>Div1</Text></View>
-                <View style = {this.state.styleVal2}><Text>Div2</Text></View>
-                <TouchableOpacity
-                    onPress={this.testFunc}>
-                    <Text>Click for a function</Text>
+                <TextInput
+                    onChangeText={(name_player1) => { this.setState({ name_player1 }) }}
+                    placeholder="name player 1" />
+                <TextInput
+                    onChangeText={(name_player2) => { this.setState({ name_player2 }) }}
+                    placeholder="name player 2" />
+                <TouchableOpacity onPress={() => this.props.navigation.navigate('Test2',
+                    [this.state.name_player1,
+                    this.state.name_player2,
+                    this.state.game_variant,
+                    this.state.amountOfLegs,
+                    this.state.game_variant2])}>
+                    <Text>Start Game</Text>
                 </TouchableOpacity>
-                <TouchableOpacity
-                    onPress={this.statePrint}>
-                    <Text>Click for function 2</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    onPress={this.changeKey}>
-                    <Text>Change key</Text>
+                <TouchableOpacity onPress={()=>console.log(this.state.game_variant)}>
+                    <Text>
+                        Test
+                    </Text>
                 </TouchableOpacity>
             </View>
-        );
+        )
     }
 }
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: colors.lightgray,
-        alignItems: 'center',
         justifyContent: 'center',
-    },
-    div1Active: {
-        backgroundColor: colors.orange
-    },
-    div1Inactive: {
-        backgroundColor: colors.gray
+        alignItems: 'center'
     }
-
-});
-
-/*
-
-        if (this.state.value == 1){
-            this.nextFunc()
-            this.setState({value:2})
-        }
-        else {
-            this.otherFunc()
-            this.setState({value:1})
-        }
-
-*/
+})
