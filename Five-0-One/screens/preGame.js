@@ -11,7 +11,7 @@ export default class Game501 extends React.Component {
         this.state = {
             player1: '',
             player2: '',
-            numberOfLegs: 4,
+            numberOfLegs: 0,
             bestOfFirstTo: 'FIRST TO ',
             legsOrSets: ' SETS',
             buttonStyleFirst: styles.firstToButtonsActive,
@@ -37,8 +37,10 @@ export default class Game501 extends React.Component {
         }
     }
     startGame = () => {
-
-        if ((this.state.numberOfLegs % 2 == 0) && this.state.bestOfFirstTo == 'BEST OF ') {
+        if(this.state.player1 == "" | this.state.player2 == "" | this.state.numberOfLegs == 0){
+            Alert.alert("Warning","Please fill in all the fields")
+        }
+        else if ((this.state.numberOfLegs % 2 == 0) && this.state.bestOfFirstTo == 'BEST OF ') {
             Alert.alert("Not A Possible Game", "Best of requires a uneven amount of legs/sets")
         } else {
             this.props.navigation.navigate('501',
@@ -85,7 +87,6 @@ export default class Game501 extends React.Component {
         }
     }
     changeScore = () => {
-        console.log("Change Score method has to be made yet")
         this.setState({ zIndex: 1 })
         this.setState({ opacity: 1 })
     }
