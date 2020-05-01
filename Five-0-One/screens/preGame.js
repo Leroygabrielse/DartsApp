@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image, Alert } from 'react-native';
 import colors from '../assets/Colors'
 import { TextInput } from 'react-native-gesture-handler';
 
@@ -11,9 +11,9 @@ export default class Game501 extends React.Component {
         this.state = {
             player1: '',
             player2: '',
-            numberOfLegs: 3,
-            bestOfFirstTo: 'FIRST TO',
-            legsOrSets: 'SETS',
+            numberOfLegs: 4,
+            bestOfFirstTo: 'FIRST TO ',
+            legsOrSets: ' SETS',
             buttonStyleFirst: styles.firstToButtonsActive,
             buttonStyleBest: styles.bestOfButtonsInactive,
             textStyleFirst: styles.firstToTextActive,
@@ -24,11 +24,20 @@ export default class Game501 extends React.Component {
             textStyleLegs: styles.firstToTextInactive,
             textStyleSets: styles.firstToTextActive,
 
-            placeholderText: "Number of Legs"
+            placeholderText: "Number Of Sets"
         }
     }
     startGame = () => {
-        this.props.navigation.navigate("501", { player1: this.state.player1, player2: this.state.player2, numberOfLegs: this.state.numberOfLegs, bestOfFirstTo: this.state.bestOfFirstTo, legsOrSets: this.state.legsOrSets })
+    
+        if ((this.state.numberOfLegs % 2 == 0)&& this.state.bestOfFirstTo == 'BEST OF '){
+            Alert.alert("Not A Possible Game","Best of requires a uneven amount of legs/sets")
+        }else{
+            this.props.navigation.navigate('501',
+            [this.state.player1,
+            this.state.player2,
+            this.state.bestOfFirstTo,
+            this.state.numberOfLegs,
+            this.state.legsOrSets])        }
     }
     makeActive = (button) => {
         switch (button) {
@@ -37,28 +46,30 @@ export default class Game501 extends React.Component {
                 this.setState({ textStyleBest: styles.firstToTextActive })
                 this.setState({ buttonStyleFirst: styles.firstToButtonsInactive })
                 this.setState({ textStyleFirst: styles.firstToTextInactive })
-                this.setState({bestOfFirstTo: "BEST OF"})
+                this.setState({bestOfFirstTo: "BEST OF "})
                 break;
             case "firstto":
                 this.setState({ buttonStyleBest: styles.bestOfButtonsInactive })
                 this.setState({ textStyleBest: styles.firstToTextInactive })
                 this.setState({ buttonStyleFirst: styles.firstToButtonsActive })
                 this.setState({ textStyleFirst: styles.firstToTextActive })
-                this.setState({bestOfFirstTo: "FIRST TO"})
+                this.setState({bestOfFirstTo: "FIRST TO "})
                 break;
             case "sets":
                 this.setState({ buttonStyleSets: styles.bestOfButtonsActive })
                 this.setState({ buttonStyleLegs: styles.firstToButtonsInactive })
                 this.setState({ textStyleSets: styles.firstToTextActive })
                 this.setState({ textStyleLegs: styles.firstToTextInactive })
-                this.setState({legsOrSets: "SETS"})
+                this.setState({legsOrSets: " SETS"})
+                this.setState({placeholderText: "Number Of Sets"})
                 break;
             case "legs":
                 this.setState({ buttonStyleSets: styles.bestOfButtonsInactive })
                 this.setState({ buttonStyleLegs: styles.firstToButtonsActive })
                 this.setState({ textStyleSets: styles.firstToTextInactive })
                 this.setState({ textStyleLegs: styles.firstToTextActive })
-                this.setState({legsOrSets: "LEGS"})
+                this.setState({legsOrSets: " LEGS"})
+                this.setState({placeholderText: "Number Of Legs"})
                 break;
         }
     }

@@ -15,8 +15,6 @@ export default function App() {
   return (
     <NavigationContainer>
         <mainStack.Navigator>
-            <mainStack.Screen name="Test" component={Test} options={{headerShown: true}}/>
-            <mainStack.Screen name="Test2" component={Test2} options={{headerShown: false}}/>
             <mainStack.Screen name="pre Game" component={PreGame} options={{headerShown: false}}/>
             <mainStack.Screen name="501" component={Game501} options={{headerShown: false}}/>
             <mainStack.Screen name="matchDone" component={matchDoneScreen}/>

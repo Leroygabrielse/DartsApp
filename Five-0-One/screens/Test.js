@@ -9,8 +9,8 @@ export default class Test extends Component {
             name_player1: '',
             name_player2: '',
             amountOfLegs: 3,
-            game_variant: 'FIRST TO ',
-            game_variant2: ' LEGS'
+            game_variant: 'BEST OF ',
+            game_variant2: ' SETS'
         }
     }
 

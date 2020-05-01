@@ -28,34 +28,43 @@ export default class Game501 extends React.Component {
             player2TextStyle: { ...styles.matchScoreTextActive, ...styles.inactiveText },
             gameVariant: this.props.route.params[2] + this.props.route.params[3] + this.props.route.params[4],
             winAmount: this.props.route.params[3],
-            amountPlayed: 0
+            amountPlayed: 0,
+            amountPlayedSets: 0
         }
     }
 
     legEnd = () => {
+        const player = this.state[Object.keys(this.state)[this.state.playerTurn]]
+
         if (this.props.route.params[4] == ' LEGS'){
-            this.state[Object.keys(this.state)[this.state.playerTurn]]["legs"] += 1
+            player["legs"] += 1
+            this.setState({playerTurn: ((this.state[Object.keys(this.state)[11]] += 1) % 2)}) //no if else used for setting correct playerturn   
+            this.setStyles(((this.state[Object.keys(this.state)[11]]) % 2))
             if (this.props.route.params[2] == 'FIRST TO '){
-                if (this.state[Object.keys(this.state)[this.state.playerTurn]]["legs"] == this.state.winAmount) {
+                if (player["legs"] == this.state.winAmount) {
                     this.props.navigation.navigate("matchDone")
                 }
             }
             else{
-                if (this.state[Object.keys(this.state)[this.state.playerTurn]]["legs"] > this.state.winAmount / 2) {
+                if (player["legs"] > this.state.winAmount / 2) {
                     this.props.navigation.navigate("matchDone")
                 }  
             }
         }else{
-            this.state[Object.keys(this.state)[this.state.playerTurn]]["legs"] += 1
-            if(this.state[Object.keys(this.state)[this.state.playerTurn]]["legs"] == 3){
-                this.state[Object.keys(this.state)[this.state.playerTurn]]["sets"] += 1
+            player["legs"] += 1
+            this.setState({playerTurn: ((this.state[Object.keys(this.state)[11]] += 1) % 2)}) //no if else used for setting correct playerturn   
+            this.setStyles(((this.state[Object.keys(this.state)[11]]) % 2))
+            if(player["legs"] == 3){
+                player["sets"] += 1
+                this.setState({playerTurn: ((this.state[Object.keys(this.state)[12]] += 1) % 2)}) //no if else used for setting correct playerturn   
+                this.setStyles(((this.state[Object.keys(this.state)[12]]) % 2))
                 if (this.props.route.params[2] == 'FIRST TO '){
-                    if (this.state[Object.keys(this.state)[this.state.playerTurn]]["sets"] == this.state.winAmount) {
+                    if (player["sets"] == this.state.winAmount) {
                         this.props.navigation.navigate("matchDone")
                     }
                 }
                 else{
-                    if (this.state[Object.keys(this.state)[this.state.playerTurn]]["sets"] > this.state.winAmount / 2) {
+                    if (player["sets"] > this.state.winAmount / 2) {
                         this.props.navigation.navigate("matchDone")
                     }  
                 }
@@ -67,17 +76,10 @@ export default class Game501 extends React.Component {
         this.state[Object.keys(this.state)[0]]["score"] = 501
         this.state[Object.keys(this.state)[1]]["score"] = 501
         this.state[Object.keys(this.state)[0]]["legs"] = 0
-        this.state[Object.keys(this.state)[1]]["legs"] = 0
+        this.state[Object.keys(this.state)[1]]["legs"] = 0,
+        this.state[Object.keys(this.state)[11]] = 0
     }
     resetLeg = () => {
-        this.state[Object.keys(this.state)[11]] += 1
-        if (this.state[Object.keys(this.state)[11]] % 2 == 0){
-            this.state[Object.keys(this.state)[3]] = 0
-            this.changePlayer()
-        }else {
-            this.state[Object.keys(this.state)[3]] = 1
-            this.changePlayer()
-        }
         this.state[Object.keys(this.state)[0]]["score"] = 501
         this.state[Object.keys(this.state)[1]]["score"] = 501
     }
@@ -105,6 +107,19 @@ export default class Game501 extends React.Component {
         }
 
     }
+    setStyles=(playerTurn)=>{
+        if(playerTurn == 0){
+            this.setState({player1Style: { ...styles.scoresPlayersActive }})
+            this.setState({player1TextStyle: { ...styles.matchScoreTextActive }})
+            this.setState({player2Style: { ...styles.scoresPlayersActive, ...styles.inactive }})
+            this.setState({player2TextStyle: { ...styles.matchScoreTextActive, ...styles.inactiveText }})
+        }else{
+            this.setState({player2Style: { ...styles.scoresPlayersActive }})
+            this.setState({player2TextStyle: { ...styles.matchScoreTextActive }})
+            this.setState({player1Style: { ...styles.scoresPlayersActive, ...styles.inactive }})
+            this.setState({player1TextStyle: { ...styles.matchScoreTextActive, ...styles.inactiveText }})
+        }
+    }
 
     changePlayer = () => {
         if (this.state.playerTurn == 0) {
@@ -122,17 +137,19 @@ export default class Game501 extends React.Component {
         }
     }
 
-    enterScore = () => {
-        console.log(this.state.playerTurn);      
-        if (this.state[Object.keys(this.state)[this.state.playerTurn]]["score"] - this.state.scoreInput == 0) {
+    enterScore = () => { 
+        const player = this.state[Object.keys(this.state)[this.state.playerTurn]]   
+        const enteredScore = this.state.scoreInput
+
+        if (player["score"] - enteredScore == 0) {
             this.legEnd()
             this.resetLeg()
             this.setState({ scoreInput: 0 })           
-        } else if (this.state[Object.keys(this.state)[this.state.playerTurn]]["score"] - this.state.scoreInput < 0) {
-            Alert.alert("Error", "Not a possible score, if thrown score is higher than your score enter 0")
+        } else if (player["score"] - enteredScore < 0) {
+            Alert.alert("Not A Possible Score!", "You can't throw that, if you bust just click on enter or enter a 0")
             this.setState({ scoreInput: 0 })
         } else {
-            this.state[Object.keys(this.state)[this.state.playerTurn]]["score"] -= this.state.scoreInput
+            player["score"] -= enteredScore
             this.changePlayer()
             this.setState({ scoreInput: 0 })
         }

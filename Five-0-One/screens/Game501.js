@@ -1,61 +1,88 @@
 import React from 'react';
-import { StyleSheet, Text, View, StatusBar, Platform, TouchableOpacity, Image, Alert } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image, StatusBar, Alert } from 'react-native';
 import colors from '../assets/Colors'
 
 const STATUSBARHEIGHT = Platform.OS === 'ios' ? 20 : 0
+
+function Player(name) {
+    return {
+        name,
+        score: 501,
+        legs: 0,
+        sets: 0
+    }
+}
 
 export default class Game501 extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
+            PLAYER_1: Player(this.props.route.params[0]),
+            PLAYER_2: Player(this.props.route.params[1]),
+            legBeginner: 0,
+            playerTurn: 0,
             scoreInput: 0,
-            playerName1: "Leroy",
-            playerName2: 'Thomas',
-            gameVariant: 'FIRST TO 5 LEGS',
-            numberOfLegsToWin: this.props.route.params["numberOfLegs"] - 1,
-            bestOfFirstTo: this.props.route.params["bestOfFirstTo"],
-            setsP1: 0,
-            legsP1: 0,
-            setsP2: 0,
-            legsP2: 0,
-            scoreP1: 501,
-            scoreP2: 501,
-            p1style: styles.matchScoreTextActive,
-            p1style2: styles.scoresPlayersActive,
-            p2style: styles.matchScoreTextInactive,
-            p2style2: styles.scoresPlayersInactive,
-            playerTurn: 1
+            player1Style: { ...styles.scoresPlayersActive },
+            player2Style: { ...styles.scoresPlayersActive, ...styles.inactive },
+            player1TextStyle: { ...styles.matchScoreTextActive },
+            player2TextStyle: { ...styles.matchScoreTextActive, ...styles.inactiveText },
+            gameVariant: this.props.route.params[2] + this.props.route.params[3] + this.props.route.params[4],
+            winAmount: this.props.route.params[3],
+            amountPlayed: 0,
+            amountPlayedSets: 0
         }
     }
-    handleLegEnding =()=>{
 
-    }
-    handleScore=(score,playerScore, legScore)=>{
-        if (score > 180 | score > playerScore | score == 166 | score == 169 | score == 172 | score == 173 | score == 175 | score == 176 | score == 178 | score == 179) {
-            Alert.alert("Warning", "Not a possible score!")
-            this.setState({ scoreInput: 0 })
-            return playerScore
-        }
-        else {
-            if ((playerScore - score) == 0){
-                this.handleLegEnding(legScore)
-            } 
-            else {
-                return playerScore - score
+    legEnd = () => {
+        const player = this.state[Object.keys(this.state)[this.state.playerTurn]]
+
+        if (this.props.route.params[4] == ' LEGS'){
+            player["legs"] += 1
+            this.setState({playerTurn: ((this.state[Object.keys(this.state)[11]] += 1) % 2)}) //no if else used for setting correct playerturn   
+            this.setStyles(((this.state[Object.keys(this.state)[11]]) % 2))
+            if (this.props.route.params[2] == 'FIRST TO '){
+                if (player["legs"] == this.state.winAmount) {
+                    this.props.navigation.navigate("matchDone")
+                }
+            }
+            else{
+                if (player["legs"] > this.state.winAmount / 2) {
+                    this.props.navigation.navigate("matchDone")
+                }  
+            }
+        }else{
+            player["legs"] += 1
+            this.setState({playerTurn: ((this.state[Object.keys(this.state)[11]] += 1) % 2)}) //no if else used for setting correct playerturn   
+            this.setStyles(((this.state[Object.keys(this.state)[11]]) % 2))
+            if(player["legs"] == 3){
+                player["sets"] += 1
+                this.setState({playerTurn: ((this.state[Object.keys(this.state)[12]] += 1) % 2)}) //no if else used for setting correct playerturn   
+                this.setStyles(((this.state[Object.keys(this.state)[12]]) % 2))
+                if (this.props.route.params[2] == 'FIRST TO '){
+                    if (player["sets"] == this.state.winAmount) {
+                        this.props.navigation.navigate("matchDone")
+                    }
+                }
+                else{
+                    if (player["sets"] > this.state.winAmount / 2) {
+                        this.props.navigation.navigate("matchDone")
+                    }  
+                }
+                this.resetSet()
             }
         }
     }
-    enterScore = () => {
-        //work with a class of class Player etc.
-        if(this.state.playerTurn == 1){
-            this.setState({scoreP1: this.handleScore(this.state.scoreInput,this.state.scoreP1,this.state.legsP1)})
-
-        }
-        else if (this.playerTurn == 2){
-            this.setState({scoreP2: this.handleScore(this.state.scoreInput,this.state.scoreP2,this.state.legsP2)})
-        }
+    resetSet = () => {
+        this.state[Object.keys(this.state)[0]]["score"] = 501
+        this.state[Object.keys(this.state)[1]]["score"] = 501
+        this.state[Object.keys(this.state)[0]]["legs"] = 0
+        this.state[Object.keys(this.state)[1]]["legs"] = 0,
+        this.state[Object.keys(this.state)[11]] = 0
     }
-    
+    resetLeg = () => {
+        this.state[Object.keys(this.state)[0]]["score"] = 501
+        this.state[Object.keys(this.state)[1]]["score"] = 501
+    }
     addNumber = (number) => {
         if (this.state.scoreInput == 0) {
             this.setState({ scoreInput: number })
@@ -63,75 +90,114 @@ export default class Game501 extends React.Component {
         else {
             var newScore = this.state.scoreInput
             newScore += number
-            if (newScore < 999) {
-                this.setState({ scoreInput: newScore })
+            if (newScore < 181) {
+                this.setState({ scoreInput: this.state.scoreInput + number })
             }
 
         }
     }
     removeNumber = () => {
-        var str = ""+this.state.scoreInput
-        var res = str.substring(0,str.length - 1)
-        if (res.length > 0){
-            this.setState({scoreInput: res})
+        var str = "" + this.state.scoreInput
+        var res = str.substring(0, str.length - 1)
+        if (res.length > 0) {
+            this.setState({ scoreInput: res })
         }
         else {
-            this.setState({scoreInput: 0})
+            this.setState({ scoreInput: 0 })
         }
-        
+
     }
-    undoScore = () => {
-        console.log("undo Score")
+    setStyles=(playerTurn)=>{
+        if(playerTurn == 0){
+            this.setState({player1Style: { ...styles.scoresPlayersActive }})
+            this.setState({player1TextStyle: { ...styles.matchScoreTextActive }})
+            this.setState({player2Style: { ...styles.scoresPlayersActive, ...styles.inactive }})
+            this.setState({player2TextStyle: { ...styles.matchScoreTextActive, ...styles.inactiveText }})
+        }else{
+            this.setState({player2Style: { ...styles.scoresPlayersActive }})
+            this.setState({player2TextStyle: { ...styles.matchScoreTextActive }})
+            this.setState({player1Style: { ...styles.scoresPlayersActive, ...styles.inactive }})
+            this.setState({player1TextStyle: { ...styles.matchScoreTextActive, ...styles.inactiveText }})
+        }
     }
 
+    changePlayer = () => {
+        if (this.state.playerTurn == 0) {
+            this.setState({ playerTurn: this.state.playerTurn + 1 })
+            this.setState({ player1Style: this.state.player2Style })
+            this.setState({ player2Style: this.state.player1Style })
+            this.setState({ player1TextStyle: this.state.player2TextStyle })
+            this.setState({ player2TextStyle: this.state.player1TextStyle })
+        } else {
+            this.setState({ playerTurn: this.state.playerTurn - 1 })
+            this.setState({ player1Style: this.state.player2Style })
+            this.setState({ player2Style: this.state.player1Style })
+            this.setState({ player1TextStyle: this.state.player2TextStyle })
+            this.setState({ player2TextStyle: this.state.player1TextStyle })
+        }
+    }
+
+    enterScore = () => { 
+        const player = this.state[Object.keys(this.state)[this.state.playerTurn]]   
+        const enteredScore = this.state.scoreInput
+
+        if (player["score"] - enteredScore == 0) {
+            this.legEnd()
+            this.resetLeg()
+            this.setState({ scoreInput: 0 })           
+        } else if (player["score"] - enteredScore < 0) {
+            Alert.alert("Not A Possible Score!", "You can't throw that, if you bust just click on enter or enter a 0")
+            this.setState({ scoreInput: 0 })
+        } else {
+            player["score"] -= enteredScore
+            this.changePlayer()
+            this.setState({ scoreInput: 0 })
+        }
+
+    }
     render() {
-
-const {player1} = this.props.route.params
-const {player2} = this.props.route.params
-const {numberOfLegs} = this.props.route.params
-const {bestOfFirstTo} = this.props.route.params
-const {legsOrSets} = this.props.route.params
-
         return (
             <View style={styles.container}>
                 <StatusBar backgroundColor='#5DA271' />
+
                 <View style={styles.topHalf}>
                     <View style={styles.withMargin}>
                         <View style={styles.gameVariant}>
-                            <Text style={styles.gameVariantText}>{bestOfFirstTo+" "+numberOfLegs+ " "+ legsOrSets}</Text></View>
-                        <View style={this.state.p1style2}>
+                            <Text style={styles.gameVariantText}>{this.state.gameVariant}</Text></View>
+                        <View style={this.state.player1Style}>
                             <View style={styles.score}>
-                                <Text>{player1}</Text>
-                                <View style={{ flex: 1, justifyContent: 'center' }}><Text style={this.state.p1style}>{this.state.scoreP1}</Text></View>
+                                <Text>{this.state.PLAYER_1["name"]}</Text>
+                                <View style={{ flex: 1, justifyContent: 'center' }}><Text style={this.state.player1TextStyle}>{this.state.PLAYER_1["score"]}</Text></View>
                                 <Text></Text>
                             </View>
                             <View style={styles.sets}>
                                 <Text>SETS</Text>
-                                <View style={{ flex: 1, justifyContent: 'center' }}><Text style={this.state.p1style}>{this.state.setsP1}</Text></View>
+                                <View style={{ flex: 1, justifyContent: 'center' }}><Text style={this.state.player1TextStyle}>{this.state.PLAYER_1["sets"]}</Text></View>
                                 <Text></Text>
 
                             </View>
                             <View style={styles.legs}>
                                 <Text>LEGS</Text>
-                                <View style={{ flex: 1, justifyContent: 'center' }}><Text style={this.state.p1style}>{this.state.legsP1}</Text></View>
+                                <View style={{ flex: 1, justifyContent: 'center' }}><Text style={this.state.player1TextStyle}>{this.state.PLAYER_1["legs"]}</Text></View>
                                 <Text></Text>
                             </View>
                         </View>
-                        <View style={this.state.p2style2}>
+                        <View style={this.state.player2Style}>
                             <View style={styles.score}>
-                                <Text>{player2}</Text>
-                                <View style={{ flex: 1, justifyContent: 'center' }}><Text style={this.state.p2style}>{this.state.scoreP2}</Text></View>
+                                <Text>{this.state.PLAYER_2["name"]}</Text>
+                                <View style={{ flex: 1, justifyContent: 'center' }}><Text style={this.state.player2TextStyle}>{this.state.PLAYER_2["score"]}</Text></View>
                                 <Text></Text>
                             </View>
-                            <View style={styles.sets2}><Text style={this.state.p2style}>{this.state.setsP2}</Text></View>
-                            <View style={styles.legs2}><Text style={this.state.p2style}>{this.state.legsP2}</Text></View>
+                            <View style={styles.sets2}><Text style={this.state.player2TextStyle}>{this.state.PLAYER_2['sets']}</Text></View>
+                            <View style={styles.legs2}><Text style={this.state.player2TextStyle}>{this.state.PLAYER_2['legs']}</Text></View>
                         </View>
                     </View>
                 </View>
+
                 <View style={styles.bottomHalf}>
                     <View style={styles.scoreInputBar}>
                         <TouchableOpacity
-                        onPress={this.undoScore}
+                            onPress={this.undoScore}
                             activeOpacity={.7}
                             style={styles.undoButton}>
                             <Image
@@ -281,13 +347,15 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: colors.orange,
         borderRadius: 15,
-        padding: 8
+        padding: 8,
+        paddingHorizontal: 30,
     },
     enterButton: {
         flex: 1,
         backgroundColor: colors.green,
         borderRadius: 15,
-        padding: 8
+        padding: 8,
+        paddingHorizontal: 30,
     },
     resizeContain: {
         resizeMode: 'contain',
@@ -331,12 +399,6 @@ const styles = StyleSheet.create({
         backgroundColor: colors.green,
         borderBottomWidth: 4
     },
-    scoresPlayersInactive: {
-        flex: 1,
-        flexDirection: 'row',
-        backgroundColor: colors.lightgreen,
-        borderBottomWidth: 4
-    },
     score: {
         flex: 4,
         alignItems: 'center'
@@ -363,100 +425,15 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center'
     },
-    matchScoreTextInactive: {
-        fontSize: 44,
-        color: colors.gray
-    },
     matchScoreTextActive: {
         fontSize: 44,
     },
+    inactive: {
+        backgroundColor: colors.lightgreen,
+    },
+    inactiveText: {
+        opacity: .4
+    }
 
 
 });
-
-/*
-enterScore = () => {
-        switch (this.state.playerTurn) {
-            case 1:
-
-                if (this.state.scoreInput > 180 | this.state.scoreInput > this.state.scoreP1) {
-                    Alert.alert("Notification", "Not a possible score!")
-                    this.setState({ scoreInput: 0 })
-                }
-                else {
-                    this.setState({ scoreP1: this.state.scoreP1 - this.state.scoreInput })
-                    if (this.state.scoreP1 - this.state.scoreInput === 0) {
-                        //Leg won
-                        
-                        this.setState({ scoreP1: 501 })
-                        this.setState({ scoreP2: 501 })
-                        this.setState({ scoreInput: 0 })
-                        this.setState({ legsP1: this.state.legsP1 + 1 })
-
-                        switch(this.state.bestOfFirstTo){
-                            case 'BEST OF':
-                                if (this.state.legsP1 > (this.state.numberOfLegsToWin / 2)) {
-                                    Alert.alert("Notification","GameShot and the Match!",[{text: "Finish", onPress: ()=>this.props.navigation.navigate("pre Game")}])
-                                } else {
-                                    Alert.alert("Notification", "GameShot!")
-                                    console.log(this.state.legsP1)
-                                }
-                                break;
-                            case 'FIRST TO':
-                                if (this.state.legsP1 == this.state.numberOfLegsToWin) {
-                                    Alert.alert("Notification","GameShot and the Match!",[{text: "Finish", onPress: ()=>this.props.navigation.navigate("pre Game")}])
-                                } else {
-                                    Alert.alert("Notification", "GameShot!")
-                                    console.log(this.state.legsP1)
-                                }
-                                break;
-                        }
-                    }
-                    else {
-                        this.setState({ scoreInput: 0 })
-                        this.setState({ playerTurn: this.state.playerTurn + 1 })
-                        this.setState({ p1style: styles.matchScoreTextInactive })
-                        this.setState({ p1style2: styles.scoresPlayersInactive })
-                        this.setState({ p2style: styles.matchScoreTextActive })
-                        this.setState({ p2style2: styles.scoresPlayersActive })
-                    }
-                }
-
-
-                break;
-            case 2:
-                if (this.state.scoreInput > 180 | this.state.scoreInput > this.state.scoreP2) {
-                    Alert.alert("Notificatie", "Ongeldige score!")
-                    this.setState({ scoreInput: 0 })
-                }
-                else {
-                    this.setState({ scoreP2: this.state.scoreP2 - this.state.scoreInput })
-                    if (this.state.scoreP2 - this.state.scoreInput === 0) {
-                        //Leg won
-                        
-                        this.setState({ scoreP1: 501 })
-                        this.setState({ scoreP2: 501 })
-                        this.setState({ scoreInput: 0 })
-                        this.setState({ legsP2: this.state.legsP2 + 1 })
-                        if (this.state.legsP2 == this.state.numberOfLegsToWin) {
-                            Alert.alert("Notification","GameShot and the Match!",[{text: "Finish", onPress: ()=>this.props.navigation.navigate("pre Game")}])
-                        }
-                        else {
-                            Alert.alert("Notification", "GameShot!")
-                        }
-                    }
-                    else {
-                        this.setState({ scoreInput: 0 })
-                        this.setState({ playerTurn: this.state.playerTurn - 1 })
-                        this.setState({ p2style: styles.matchScoreTextInactive })
-                        this.setState({ p2style2: styles.scoresPlayersInactive })
-                        this.setState({ p1style: styles.matchScoreTextActive })
-                        this.setState({ p1style2: styles.scoresPlayersActive })
-                    }
-                }
-
-
-                break;
-        }
-    }
-    */
