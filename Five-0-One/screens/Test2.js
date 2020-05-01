@@ -19,6 +19,7 @@ export default class Game501 extends React.Component {
         this.state = {
             PLAYER_1: Player(this.props.route.params[0]),
             PLAYER_2: Player(this.props.route.params[1]),
+            legBeginner: 0,
             playerTurn: 0,
             scoreInput: 0,
             player1Style: { ...styles.scoresPlayersActive },
@@ -26,9 +27,11 @@ export default class Game501 extends React.Component {
             player1TextStyle: { ...styles.matchScoreTextActive },
             player2TextStyle: { ...styles.matchScoreTextActive, ...styles.inactiveText },
             gameVariant: this.props.route.params[2] + this.props.route.params[3] + this.props.route.params[4],
-            winAmount: this.props.route.params[3]
+            winAmount: this.props.route.params[3],
+            amountPlayed: 0
         }
     }
+
     legEnd = () => {
         if (this.props.route.params[4] == ' LEGS'){
             this.state[Object.keys(this.state)[this.state.playerTurn]]["legs"] += 1
@@ -67,6 +70,14 @@ export default class Game501 extends React.Component {
         this.state[Object.keys(this.state)[1]]["legs"] = 0
     }
     resetLeg = () => {
+        this.state[Object.keys(this.state)[11]] += 1
+        if (this.state[Object.keys(this.state)[11]] % 2 == 0){
+            this.state[Object.keys(this.state)[3]] = 0
+            this.changePlayer()
+        }else {
+            this.state[Object.keys(this.state)[3]] = 1
+            this.changePlayer()
+        }
         this.state[Object.keys(this.state)[0]]["score"] = 501
         this.state[Object.keys(this.state)[1]]["score"] = 501
     }
@@ -112,10 +123,11 @@ export default class Game501 extends React.Component {
     }
 
     enterScore = () => {
+        console.log(this.state.playerTurn);      
         if (this.state[Object.keys(this.state)[this.state.playerTurn]]["score"] - this.state.scoreInput == 0) {
             this.legEnd()
             this.resetLeg()
-            this.setState({ scoreInput: 0 })
+            this.setState({ scoreInput: 0 })           
         } else if (this.state[Object.keys(this.state)[this.state.playerTurn]]["score"] - this.state.scoreInput < 0) {
             Alert.alert("Error", "Not a possible score, if thrown score is higher than your score enter 0")
             this.setState({ scoreInput: 0 })
