@@ -193,7 +193,8 @@ export default class Game501 extends React.Component {
             winAmount: this.props.route.params[3],
             amountPlayed: 0,
             amountPlayedSets: 0,
-            hintText: ''
+            hintText: '',
+            previousScore: 0
         }
     }
 
@@ -254,7 +255,7 @@ export default class Game501 extends React.Component {
         else {
             var newScore = this.state.scoreInput
             newScore += number
-            if (newScore < 181) {
+            if (newScore < 181 && newScore != 179 && newScore != 178 && newScore != 176 && newScore != 175 && newScore != 173 && newScore != 172 && newScore != 169 && newScore != 166 && newScore != 163) {
                 this.setState({ scoreInput: this.state.scoreInput + number })
             }
 
@@ -300,10 +301,28 @@ export default class Game501 extends React.Component {
             this.setState({ player2TextStyle: this.state.player1TextStyle })
         }
     }
+    undoScore = () => {
+        let modulesVar = !this.state.playerTurn % 2
+
+        const player = this.state[Object.keys(this.state)[modulesVar]]
+        const enteredScore = this.state.previousScore
+
+        if (player["score"] + parseInt(enteredScore) > this.props.route.params[5]) {
+            console.log("this is not possible");
+        }
+        else {
+            player["score"] += parseInt(enteredScore)
+            this.changePlayer()
+            this.setState({ scoreInput: 0 })
+        }
+
+
+    }
 
     enterScore = () => {
         const player = this.state[Object.keys(this.state)[this.state.playerTurn]]
         const enteredScore = this.state.scoreInput
+        this.setState({ previousScore: this.state.scoreInput })
 
         if (player["score"] - enteredScore == 0) {
             this.legEnd()
@@ -332,7 +351,7 @@ export default class Game501 extends React.Component {
                             <View style={styles.score}>
                                 <Text style={{ flex: 1 }}>{this.state.PLAYER_1["name"]}</Text>
                                 <View style={{ flex: 1, justifyContent: 'center' }}><Text style={this.state.player1TextStyle}>{this.state.PLAYER_1["score"]}</Text></View>
-                                <Text style={{ flex: 1 }}>{SCOREHINTS[""+this.state.PLAYER_1["score"]]}</Text>
+                                <Text style={{ flex: 1 }}>{SCOREHINTS["" + this.state.PLAYER_1["score"]]}</Text>
                             </View>
                             <View style={styles.sets}>
                                 <Text>SETS</Text>
@@ -350,7 +369,7 @@ export default class Game501 extends React.Component {
                             <View style={styles.score}>
                                 <Text style={{ flex: 1 }}>{this.state.PLAYER_2["name"]}</Text>
                                 <View style={{ flex: 1, justifyContent: 'center' }}><Text style={this.state.player2TextStyle}>{this.state.PLAYER_2["score"]}</Text></View>
-                                <Text style={{ flex: 1 }}>{SCOREHINTS[""+this.state.PLAYER_2["score"]]}</Text>
+                                <Text style={{ flex: 1 }}>{SCOREHINTS["" + this.state.PLAYER_2["score"]]}</Text>
                             </View>
                             <View style={styles.sets2}><Text style={this.state.player2TextStyle}>{this.state.PLAYER_2['sets']}</Text></View>
                             <View style={styles.legs2}><Text style={this.state.player2TextStyle}>{this.state.PLAYER_2['legs']}</Text></View>
