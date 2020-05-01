@@ -349,9 +349,10 @@ export default class Game501 extends React.Component {
                             <Text style={styles.gameVariantText}>{this.state.gameVariant}</Text></View>
                         <View style={this.state.player1Style}>
                             <View style={styles.score}>
-                                <Text style={{ flex: 1 }}>{this.state.PLAYER_1["name"]}</Text>
-                                <View style={{ flex: 1, justifyContent: 'center' }}><Text style={this.state.player1TextStyle}>{this.state.PLAYER_1["score"]}</Text></View>
-                                <Text style={{ flex: 1 }}>{SCOREHINTS["" + this.state.PLAYER_1["score"]]}</Text>
+                                <Text style={styles.nameText}>{this.state.PLAYER_1["name"]}</Text>
+                                <View style={styles.scoreText}><Text style={this.state.player1TextStyle}>{this.state.PLAYER_1["score"]}</Text></View>
+                                <Text style={styles.hintText}>{SCOREHINTS["" + this.state.PLAYER_1["score"]]}</Text>
+                                <View style={styles.statsView}><Text style = {styles.statsText}>avg: 66</Text><Text style = {styles.statsText}>darts: 9</Text></View>
                             </View>
                             <View style={styles.sets}>
                                 <Text>SETS</Text>
@@ -366,10 +367,11 @@ export default class Game501 extends React.Component {
                             </View>
                         </View>
                         <View style={this.state.player2Style}>
-                            <View style={styles.score}>
-                                <Text style={{ flex: 1 }}>{this.state.PLAYER_2["name"]}</Text>
-                                <View style={{ flex: 1, justifyContent: 'center' }}><Text style={this.state.player2TextStyle}>{this.state.PLAYER_2["score"]}</Text></View>
-                                <Text style={{ flex: 1 }}>{SCOREHINTS["" + this.state.PLAYER_2["score"]]}</Text>
+                        <View style={styles.score}>
+                                <Text style={styles.nameText}>{this.state.PLAYER_2["name"]}</Text>
+                                <View style={styles.scoreText}><Text style={this.state.player2TextStyle}>{this.state.PLAYER_2["score"]}</Text></View>
+                                <Text style={styles.hintText}>{SCOREHINTS["" + this.state.PLAYER_2["score"]]}</Text>
+                                <View style={styles.statsView}><Text style = {styles.statsText}>avg: 66</Text><Text style = {styles.statsText}>darts: 9</Text></View>
                             </View>
                             <View style={styles.sets2}><Text style={this.state.player2TextStyle}>{this.state.PLAYER_2['sets']}</Text></View>
                             <View style={styles.legs2}><Text style={this.state.player2TextStyle}>{this.state.PLAYER_2['legs']}</Text></View>
@@ -616,6 +618,29 @@ const styles = StyleSheet.create({
     },
     inactiveText: {
         opacity: .4
+    },
+    nameText: {
+        flex: 2, 
+        fontSize: 26
+    },
+    scoreText: { 
+        flex: 2,
+        justifyContent: 'center' 
+    },
+    hintTextstyle: {
+        flex: 1
+    },
+    statsView: {
+        flex: 1, 
+        flexDirection: 'row', 
+        width: '100%',
+        justifyContent: 'space-between',
+        paddingHorizontal: '3%',
+        paddingBottom: "3%",
+        alignItems: 'flex-end'
+    },
+    statsText: {
+        fontSize: 16
     }
 
 
