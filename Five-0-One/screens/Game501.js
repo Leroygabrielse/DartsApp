@@ -4,10 +4,10 @@ import colors from '../assets/Colors'
 
 const STATUSBARHEIGHT = Platform.OS === 'ios' ? 20 : 0
 
-function Player(name) {
+function Player(name, score) {
     return {
         name,
-        score: 501,
+        score,
         legs: 0,
         sets: 0
     }
@@ -17,8 +17,8 @@ export default class Game501 extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            PLAYER_1: Player(this.props.route.params[0]),
-            PLAYER_2: Player(this.props.route.params[1]),
+            PLAYER_1: Player(this.props.route.params[0],this.props.route.params[5]),
+            PLAYER_2: Player(this.props.route.params[1],this.props.route.params[5]),
             legBeginner: 0,
             playerTurn: 0,
             scoreInput: 0,
@@ -73,15 +73,15 @@ export default class Game501 extends React.Component {
         }
     }
     resetSet = () => {
-        this.state[Object.keys(this.state)[0]]["score"] = 501
-        this.state[Object.keys(this.state)[1]]["score"] = 501
+        this.state[Object.keys(this.state)[0]]["score"] = this.props.route.params[5]
+        this.state[Object.keys(this.state)[1]]["score"] = this.props.route.params[5]
         this.state[Object.keys(this.state)[0]]["legs"] = 0
         this.state[Object.keys(this.state)[1]]["legs"] = 0,
         this.state[Object.keys(this.state)[11]] = 0
     }
     resetLeg = () => {
-        this.state[Object.keys(this.state)[0]]["score"] = 501
-        this.state[Object.keys(this.state)[1]]["score"] = 501
+        this.state[Object.keys(this.state)[0]]["score"] = this.props.route.params[5]
+        this.state[Object.keys(this.state)[1]]["score"] = this.props.route.params[5]
     }
     addNumber = (number) => {
         if (this.state.scoreInput == 0) {
