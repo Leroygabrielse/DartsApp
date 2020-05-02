@@ -8,6 +8,6 @@ const colors = {
     gray: '#898989',
     salmon: '#D4A0A7',
     lightgreen: '#97C3A4',
-    lightgray: "#BEBEBE"
+    lightgray: "#BEBEBE",
   };
  export default colors;

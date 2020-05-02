@@ -173,7 +173,9 @@ function Player(name, score) {
         name,
         score,
         legs: 0,
-        sets: 0
+        sets: 0,
+        dartsThrown: 0,
+        avg: 0
     }
 }
 export default class Game501 extends React.Component {
@@ -194,7 +196,8 @@ export default class Game501 extends React.Component {
             amountPlayed: 0,
             amountPlayedSets: 0,
             hintText: '',
-            previousScore: 0
+            previousScore: 0,
+            notClickedBefore: true
         }
     }
 
@@ -302,39 +305,48 @@ export default class Game501 extends React.Component {
         }
     }
     undoScore = () => {
-        let modulesVar = !this.state.playerTurn % 2
+        if (this.state.notClickedBefore) {
+            let modulesVar = !this.state.playerTurn % 2
 
-        const player = this.state[Object.keys(this.state)[modulesVar]]
-        const enteredScore = this.state.previousScore
+            const player = this.state[Object.keys(this.state)[modulesVar]]
+            const enteredScore = this.state.previousScore
 
-        if (player["score"] + parseInt(enteredScore) > this.props.route.params[5]) {
-            console.log("this is not possible");
+            if (player["score"] + parseInt(enteredScore) > this.props.route.params[5]) {
+            } else if (player["dartsThrown"] == 0) {
+            }
+            else {
+                player["score"] += parseInt(enteredScore)
+                player["dartsThrown"] -= 3
+                player["avg"] = (this.props.route.params[5] - player["score"]) / (player["dartsThrown"]) * 3
+                this.changePlayer()
+                this.setState({ scoreInput: 0 })
+                this.setState({notClickedBefore: false})
+            }
+
+
         }
-        else {
-            player["score"] += parseInt(enteredScore)
-            this.changePlayer()
-            this.setState({ scoreInput: 0 })
-        }
-
-
     }
 
     enterScore = () => {
         const player = this.state[Object.keys(this.state)[this.state.playerTurn]]
         const enteredScore = this.state.scoreInput
         this.setState({ previousScore: this.state.scoreInput })
+        player["dartsThrown"] += 3
 
         if (player["score"] - enteredScore == 0) {
             this.legEnd()
             this.resetLeg()
             this.setState({ scoreInput: 0 })
+            this.setState({notClickedBefore: true})
         } else if (player["score"] - enteredScore < 0) {
             Alert.alert("Not A Possible Score!", "You can't throw that, if you bust just click on enter or enter a 0")
             this.setState({ scoreInput: 0 })
         } else {
             player["score"] -= enteredScore
+            player["avg"] = (this.props.route.params[5] - player["score"]) / (player["dartsThrown"]) * 3
             this.changePlayer()
             this.setState({ scoreInput: 0 })
+            this.setState({notClickedBefore: true})
         }
 
     }
@@ -352,7 +364,7 @@ export default class Game501 extends React.Component {
                                 <Text style={styles.nameText}>{this.state.PLAYER_1["name"]}</Text>
                                 <View style={styles.scoreText}><Text style={this.state.player1TextStyle}>{this.state.PLAYER_1["score"]}</Text></View>
                                 <Text style={styles.hintText}>{SCOREHINTS["" + this.state.PLAYER_1["score"]]}</Text>
-                                <View style={styles.statsView}><Text style = {styles.statsText}>avg: 66</Text><Text style = {styles.statsText}>darts: 9</Text></View>
+                                <View style={styles.statsView}><Text style={styles.statsText}>avg: {this.state.PLAYER_1["avg"]}</Text><Text style={styles.statsText}>darts: {this.state.PLAYER_1["dartsThrown"]}</Text></View>
                             </View>
                             <View style={styles.sets}>
                                 <Text>SETS</Text>
@@ -367,11 +379,11 @@ export default class Game501 extends React.Component {
                             </View>
                         </View>
                         <View style={this.state.player2Style}>
-                        <View style={styles.score}>
+                            <View style={styles.score}>
                                 <Text style={styles.nameText}>{this.state.PLAYER_2["name"]}</Text>
                                 <View style={styles.scoreText}><Text style={this.state.player2TextStyle}>{this.state.PLAYER_2["score"]}</Text></View>
                                 <Text style={styles.hintText}>{SCOREHINTS["" + this.state.PLAYER_2["score"]]}</Text>
-                                <View style={styles.statsView}><Text style = {styles.statsText}>avg: 66</Text><Text style = {styles.statsText}>darts: 9</Text></View>
+                                <View style={styles.statsView}><Text style={styles.statsText}>avg: {this.state.PLAYER_2["avg"]}</Text><Text style={styles.statsText}>darts: {this.state.PLAYER_2["dartsThrown"]}</Text></View>
                             </View>
                             <View style={styles.sets2}><Text style={this.state.player2TextStyle}>{this.state.PLAYER_2['sets']}</Text></View>
                             <View style={styles.legs2}><Text style={this.state.player2TextStyle}>{this.state.PLAYER_2['legs']}</Text></View>
@@ -520,7 +532,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingHorizontal: 4,
         paddingVertical: 4,
-        borderBottomWidth: 4
+        borderBottomWidth: 4,
+        borderTopWidth: 4
     },
     scoreInputText: {
         flex: 5,
@@ -582,7 +595,7 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         backgroundColor: colors.green,
-        borderBottomWidth: 4
+        // borderBottomWidth: 4
     },
     score: {
         flex: 4,
@@ -620,19 +633,19 @@ const styles = StyleSheet.create({
         opacity: .4
     },
     nameText: {
-        flex: 2, 
+        flex: 2,
         fontSize: 26
     },
-    scoreText: { 
+    scoreText: {
         flex: 2,
-        justifyContent: 'center' 
+        justifyContent: 'center'
     },
     hintTextstyle: {
         flex: 1
     },
     statsView: {
-        flex: 1, 
-        flexDirection: 'row', 
+        flex: 1,
+        flexDirection: 'row',
         width: '100%',
         justifyContent: 'space-between',
         paddingHorizontal: '3%',
