@@ -1,13 +1,11 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Image, Alert } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image, Alert, KeyboardAvoidingView, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import colors from '../assets/Colors'
 import { TextInput } from 'react-native-gesture-handler';
 
 export default class Game501 extends React.Component {
     constructor(props) {
         super(props)
-        this.player2Ref = React.createRef();
-        this.numbersRef = React.createRef();
         this.state = {
             player1: '',
             player2: '',
@@ -33,12 +31,26 @@ export default class Game501 extends React.Component {
             fiveBG: colors.orange,
             threeBG: colors.lightgray,
             sevenBG: colors.lightgray,
-            customBG: colors.lightgray
+            customBG: colors.lightgray,
+
+            mover: "",
+            bool: false
         }
     }
+    moveLayout = () => {
+        this.setState({ mover: styles.mover })
+        this.setState({ bool: true })
+    }
+    cancleMove = () => {
+        this.setState({ mover: '' })
+        this.setState({ bool: false })
+    }
     startGame = () => {
-        if(this.state.player1 == "" | this.state.player2 == "" | this.state.numberOfLegs == 0){
-            Alert.alert("Warning","Please fill in all the fields")
+        if (this.state.player1 == "" | this.state.player2 == "" | this.state.numberOfLegs == 0) {
+            Alert.alert("Warning", "Please fill in all the fields")
+        }
+        else if (isNaN(this.state.numberOfLegs)) {
+            Alert.alert("Warning", "Please enter a valid number")
         }
         else if ((this.state.numberOfLegs % 2 == 0) && this.state.bestOfFirstTo == 'BEST OF ') {
             Alert.alert("Not A Possible Game", "Best of requires a uneven amount of legs/sets")
@@ -48,7 +60,7 @@ export default class Game501 extends React.Component {
                 this.state.player2,
                 this.state.bestOfFirstTo,
                 this.state.numberOfLegs,
-                this.state.legsOrSets, 
+                this.state.legsOrSets,
                 this.state.beginScore])
         }
     }
@@ -89,133 +101,150 @@ export default class Game501 extends React.Component {
     changeScore = () => {
         this.setState({ zIndex: 1 })
         this.setState({ opacity: 1 })
+        Keyboard.dismiss()
     }
     xClick = () => {
         this.setState({ zIndex: -1 })
         this.setState({ opacity: 0 })
+        Keyboard.dismiss();
     }
     setColor = () => {
-        this.setState({fiveBG: colors.lightgray})
-        this.setState({sevenBG: colors.lightgray})
-        this.setState({customBG: colors.orange})
-        this.setState({threeBG: colors.lightgray})
+        this.setState({ fiveBG: colors.lightgray })
+        this.setState({ sevenBG: colors.lightgray })
+        this.setState({ customBG: colors.orange })
+        this.setState({ threeBG: colors.lightgray })
     }
-    setBeginScore = (number) =>{
-        this.setState({beginScore: number})
-        if (number == 501){
-            this.setState({fiveBG: colors.orange})
-            this.setState({sevenBG: colors.lightgray})
-            this.setState({customBG: colors.lightgray})
-            this.setState({threeBG: colors.lightgray})
-        }else if (number == 301){
-            this.setState({threeBG: colors.orange})
-            this.setState({fiveBG: colors.lightgray})
-            this.setState({sevenBG: colors.lightgray})
-            this.setState({customBG: colors.lightgray})
+    setBeginScore = (number) => {
+        this.setState({ beginScore: number })
+        if (number == 501) {
+            this.setState({ fiveBG: colors.orange })
+            this.setState({ sevenBG: colors.lightgray })
+            this.setState({ customBG: colors.lightgray })
+            this.setState({ threeBG: colors.lightgray })
+        } else if (number == 301) {
+            this.setState({ threeBG: colors.orange })
+            this.setState({ fiveBG: colors.lightgray })
+            this.setState({ sevenBG: colors.lightgray })
+            this.setState({ customBG: colors.lightgray })
 
-        }else if (number == 701){
-            this.setState({sevenBG: colors.orange})
-            this.setState({fiveBG: colors.lightgray})
-            this.setState({threeBG: colors.lightgray})
-            this.setState({customBG: colors.lightgray})
+        } else if (number == 701) {
+            this.setState({ sevenBG: colors.orange })
+            this.setState({ fiveBG: colors.lightgray })
+            this.setState({ threeBG: colors.lightgray })
+            this.setState({ customBG: colors.lightgray })
 
-        } else if (number > 1001){
+        } else if (number > 1001) {
             Alert.alert("Number too big", "Max is 1001")
-            this.setState({beginScore: number})
+            this.setState({ beginScore: number })
         }
     }
     render() {
         return (
-            <View style={styles.container}>
-                <View style={{ ...styles.selector, zIndex: this.state.zIndex, opacity: this.state.opacity }}>
-                    <View style = {{flex:0.6, alignItems: 'flex-end', paddingRight:15, paddingTop: 10}}>
-                    <TouchableOpacity 
-                    onPress={this.xClick}>
-                        <Text style={{ fontSize: 44, color: colors.lightgray }}>X</Text>
-                    </TouchableOpacity>
-                    </View>
-                    <TouchableOpacity 
-                    style = {{...styles.buttonsInChanger, backgroundColor: this.state.fiveBG , marginTop: '5%'}}
-                    onPress = {()=>this.setBeginScore(501)}>
-                        <Text style = {{fontSize: 44, marginTop: "3.5%"}}>501</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity 
-                    style = {{...styles.buttonsInChanger, backgroundColor: this.state.threeBG}}
-                    onPress = {()=>this.setBeginScore(301)}>
-                        <Text style = {{fontSize: 44}}>301</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity 
-                    style = {{...styles.buttonsInChanger,backgroundColor: this.state.sevenBG}}
-                    onPress = {()=>this.setBeginScore(701)}>
-                        <Text style = {{fontSize: 44}}>701</Text>
-                    </TouchableOpacity>
-                    <View style = {{...styles.buttonsInChanger, backgroundColor: this.state.customBG,flex: 2, marginBottom: 25}}>
-                    <Text style={{fontSize: 24, marginBottom: 5}}>Or enter a custom score</Text>
-                    <TextInput 
-                    style={{backgroundColor: colors.white, width: '90%', padding: 15, borderRadius: 15, marginBottom: 5}}
-                    onChangeText={(beginScore)=>this.setBeginScore(beginScore)}
-                    onTouchStart={this.setColor}
-                    placeholder="Enter Score" />
-                    
-                    </View><TouchableOpacity style={styles.goButton}
-                    onPress={this.xClick}
-                    >
-                        <Text style={{fontSize: 30, color: colors.white, textAlign: 'center'}}>GO</Text>
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.gameScoreStart}>
-                    <Text style={{ flex: 1 }}></Text>
-                    <Text style={styles.gameText}>{this.state.beginScore}</Text>
-                    <View style={styles.changeButtonContainer}>
+                <KeyboardAvoidingView
+                    behavior="padding"
+                    enabled={this.state.bool}
+                    style={{ ...styles.container, ...this.state.mover }}>
+                    <View style={{ ...styles.selector, zIndex: this.state.zIndex, opacity: this.state.opacity }}>
+                        <View style={{ flex: 0.6, alignItems: 'flex-end', paddingRight: 15, paddingTop: 10 }}>
+                            <TouchableOpacity
+                                onPress={this.xClick}>
+                                <Text style={{ fontSize: 44, color: colors.lightgray }}>X</Text>
+                            </TouchableOpacity>
+                        </View>
                         <TouchableOpacity
-                            onPress={this.changeScore}
-                            style={styles.changeButton}>
-                            <Image
-                                style={styles.containImage}
-                                source={require("./../assets/changeIcon.png")} />
+                            style={{ ...styles.buttonsInChanger, backgroundColor: this.state.fiveBG, marginTop: '5%' }}
+                            onPress={() => this.setBeginScore(501)}>
+                            <Text style={{ fontSize: 44, marginTop: "3.5%" }}>501</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={{ ...styles.buttonsInChanger, backgroundColor: this.state.threeBG }}
+                            onPress={() => this.setBeginScore(301)}>
+                            <Text style={{ fontSize: 44 }}>301</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={{ ...styles.buttonsInChanger, backgroundColor: this.state.sevenBG }}
+                            onPress={() => this.setBeginScore(701)}>
+                            <Text style={{ fontSize: 44 }}>701</Text>
+                        </TouchableOpacity>
+                        <View style={{ ...styles.buttonsInChanger, backgroundColor: this.state.customBG, flex: 2, marginBottom: 25 }}>
+                            <Text style={{ fontSize: 24, marginBottom: 5 }}>Or enter a custom score</Text>
+                            <TextInput
+                                style={{ backgroundColor: colors.white, width: '90%', padding: 15, borderRadius: 15, marginBottom: 5}}
+                                onChangeText={(beginScore) => this.setBeginScore(beginScore)}
+                                onTouchStart={this.setColor}
+                                placeholder="Enter Score" />
+
+                        </View><TouchableOpacity style={styles.goButton}
+                            onPress={this.xClick}
+                        >
+                            <Text style={{ fontSize: 30, color: colors.white, textAlign: 'center' }}>GO</Text>
                         </TouchableOpacity>
                     </View>
+                    <View style={styles.gameScoreStart}>
+                        <Text style={{ flex: 1 }}></Text>
+                        <Text style={styles.gameText}>{this.state.beginScore}</Text>
+                        <View style={styles.changeButtonContainer}>
+                            <TouchableOpacity
+                                onPress={this.changeScore}
+                                style={styles.changeButton}>
+                                <Image
+                                    style={styles.containImage}
+                                    source={require("./../assets/changeIcon.png")} />
+                            </TouchableOpacity>
+                        </View>
 
-                </View>
-
-                <TextInput
-                    returnKeyType='next'
-                    style={styles.inputs}
-                    onChangeText={(player1) => this.setState({ player1 })}
-                    placeholder="Name Player 1" />
-                <TextInput
-                    returnKeyType='next'
-                    style={styles.inputs}
-                    onChangeText={(player2) => this.setState({ player2 })}
-                    placeholder="Name Player 2" />
-                <View style={styles.bestOf}>
+                    </View>
+                    <TextInput
+                        returnKeyType='next'
+                        keyboardType='ascii-capable'
+                        style={styles.inputs}
+                        onChangeText={(player1) => this.setState({ player1 })}
+                        placeholder="Name Player 1"
+                        onSubmitEditing={() => { this.secondTextInput.focus(); }}
+                        blurOnSubmit={false} />
+                    <TextInput
+                        keyboardType='ascii-capable'
+                        ref={(input) => { this.secondTextInput = input; }}
+                        returnKeyType='next'
+                        style={styles.inputs}
+                        onChangeText={(player2) => this.setState({ player2 })}
+                        onSubmitEditing={() => {
+                            this.thirdTextInput.focus();
+                            this.moveLayout()
+                        }}
+                        blurOnSubmit={false}
+                        placeholder="Name Player 2" />
+                    <View style={styles.bestOf}>
+                        <TouchableOpacity
+                            onPress={() => this.makeActive('bestof')}
+                            style={this.state.buttonStyleBest}><Text style={this.state.textStyleBest}>BEST OF</Text></TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => this.makeActive('firstto')}
+                            style={this.state.buttonStyleFirst}><Text style={this.state.textStyleFirst}>FIRST TO</Text></TouchableOpacity>
+                    </View>
+                    <View style={styles.bestOf}>
+                        <TouchableOpacity
+                            onPress={() => this.makeActive('sets')}
+                            style={this.state.buttonStyleSets}><Text style={this.state.textStyleSets}>SETS</Text></TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => this.makeActive('legs')}
+                            style={this.state.buttonStyleLegs}><Text style={this.state.textStyleLegs}>LEGS</Text></TouchableOpacity>
+                    </View>
+                    <TextInput
+                        onSubmitEditing={this.cancleMove}
+                        onTouchStart={this.moveLayout}
+                        onEndEditing={this.cancleMove}
+                        ref={(input) => { this.thirdTextInput = input; }}
+                        style={styles.inputs}
+                        returnKeyType='go'
+                        onChangeText={(numberOfLegs) => this.setState({ numberOfLegs })}
+                        placeholder={this.state.placeholderText} />
                     <TouchableOpacity
-                        onPress={() => this.makeActive('bestof')}
-                        style={this.state.buttonStyleBest}><Text style={this.state.textStyleBest}>BEST OF</Text></TouchableOpacity>
-                    <TouchableOpacity
-                        onPress={() => this.makeActive('firstto')}
-                        style={this.state.buttonStyleFirst}><Text style={this.state.textStyleFirst}>FIRST TO</Text></TouchableOpacity>
-                </View>
-                <View style={styles.bestOf}>
-                    <TouchableOpacity
-                        onPress={() => this.makeActive('sets')}
-                        style={this.state.buttonStyleSets}><Text style={this.state.textStyleSets}>SETS</Text></TouchableOpacity>
-                    <TouchableOpacity
-                        onPress={() => this.makeActive('legs')}
-                        style={this.state.buttonStyleLegs}><Text style={this.state.textStyleLegs}>LEGS</Text></TouchableOpacity>
-                </View>
-                <TextInput
-                    style={styles.inputs}
-                    returnKeyType='go'
-                    keyboardType='numbers-and-punctuation'
-                    onChangeText={(numberOfLegs) => this.setState({ numberOfLegs })}
-                    placeholder={this.state.placeholderText} />
-                <TouchableOpacity
-                    style={styles.startbutton}
-                    onPress={this.startGame}>
-                    <Text style={{ color: colors.white, fontSize: 30 }}>Start</Text>
-                </TouchableOpacity>
-            </View>
+                        style={styles.startbutton}
+                        onPress={this.startGame}>
+                        <Text style={{ color: colors.white, fontSize: 30 }}>Start</Text>
+                    </TouchableOpacity>
+                </KeyboardAvoidingView>
         );
     }
 }
@@ -334,6 +363,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 15,
-        padding:10
+        padding: 10
+    },
+    mover: {
+        justifyContent: 'flex-end'
     }
 });
