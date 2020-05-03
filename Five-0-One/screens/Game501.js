@@ -250,6 +250,8 @@ export default class Game501 extends React.Component {
     resetLeg = () => {
         this.state[Object.keys(this.state)[0]]["score"] = this.props.route.params[5]
         this.state[Object.keys(this.state)[1]]["score"] = this.props.route.params[5]
+        this.state[Object.keys(this.state)[0]]["avg"] = 0
+        this.state[Object.keys(this.state)[1]]["avg"] = 0
     }
     addNumber = (number) => {
         if (this.state.scoreInput == 0) {
@@ -318,6 +320,9 @@ export default class Game501 extends React.Component {
                 player["score"] += parseInt(enteredScore)
                 player["dartsThrown"] -= 3
                 player["avg"] = (this.props.route.params[5] - player["score"]) / (player["dartsThrown"]) * 3
+                if (isNaN(player["avg"])) {
+                    player["avg"] = 0
+                }
                 this.changePlayer()
                 this.setState({ scoreInput: 0 })
                 this.setState({notClickedBefore: false})
@@ -343,7 +348,7 @@ export default class Game501 extends React.Component {
             this.setState({ scoreInput: 0 })
         } else {
             player["score"] -= enteredScore
-            player["avg"] = (this.props.route.params[5] - player["score"]) / (player["dartsThrown"]) * 3
+            player["avg"] = Math.round(((this.props.route.params[5] - player["score"]) / (player["dartsThrown"]) * 3) * 100) / 100
             this.changePlayer()
             this.setState({ scoreInput: 0 })
             this.setState({notClickedBefore: true})
