@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Image, StatusBar, Alert } from 'react-native';
-import colors from '../assets/Colors'
+import colors from '../config/Colors'
 
 const STATUSBARHEIGHT = Platform.OS === 'ios' ? 20 : 0
 const SCOREHINTS = {
@@ -404,7 +404,7 @@ export default class Game501 extends React.Component {
                             style={styles.undoButton}>
                             <Image
                                 style={styles.resizeContain}
-                                source={require("./../assets/undoScore.png")}
+                                source={require("../assets/undoScore.png")}
                             />
                         </TouchableOpacity>
                         <Text style={styles.scoreInputText}>
@@ -416,7 +416,7 @@ export default class Game501 extends React.Component {
                             style={styles.enterButton}>
                             <Image
                                 style={styles.resizeContain}
-                                source={require('./../assets/enterScore.png')}
+                                source={require('../assets/enterScore.png')}
                             />
                         </TouchableOpacity>
                     </View>
@@ -486,7 +486,7 @@ export default class Game501 extends React.Component {
                             style={styles.numberButtons}>
                             <Image
                                 style={styles.resizeContain2}
-                                source={require('./../assets/statsButton.png')} />
+                                source={require('../assets/statsButton.png')} />
                         </TouchableOpacity>
                         <TouchableOpacity
                             onPress={() => this.addNumber("0")}
@@ -499,7 +499,7 @@ export default class Game501 extends React.Component {
                             style={styles.numberButtons}>
                             <Image
                                 style={styles.resizeContain2}
-                                source={require('./../assets/backspace.png')} />
+                                source={require('../assets/backspace.png')} />
                         </TouchableOpacity>
                     </View>
                 </View>

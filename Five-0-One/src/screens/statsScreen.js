@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Alert } from 'react-native';
-import colors from '../assets/Colors'
+import colors from '../config/Colors'
 
 export default class Game501 extends React.Component {
 

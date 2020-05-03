@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Image, Alert, KeyboardAvoidingView, Keyboard, TouchableWithoutFeedback, Platform } from 'react-native';
-import colors from '../assets/Colors'
+import colors from '../config/Colors'
 import { TextInput } from 'react-native-gesture-handler';
 
 export default class Game501 extends React.Component {
@@ -139,7 +139,7 @@ export default class Game501 extends React.Component {
         }
     }
     render() {
-        const behavior = Platform.OS === 'ios' ? "padding": "";
+        const behavior = Platform.OS === "ios" ? "padding": "";
         return (
                 <TouchableWithoutFeedback onPress={()=>Keyboard.dismiss()}>
                 <KeyboardAvoidingView
@@ -191,7 +191,7 @@ export default class Game501 extends React.Component {
                                 style={styles.changeButton}>
                                 <Image
                                     style={styles.containImage}
-                                    source={require("./../assets/changeIcon.png")} />
+                                    source={require("../assets/changeIcon.png")} />
                             </TouchableOpacity>
                         </View>
 
