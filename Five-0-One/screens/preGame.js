@@ -140,6 +140,7 @@ export default class Game501 extends React.Component {
     }
     render() {
         return (
+                <TouchableWithoutFeedback onPress={()=>Keyboard.dismiss()}>
                 <KeyboardAvoidingView
                     behavior="padding"
                     enabled={this.state.bool}
@@ -245,6 +246,7 @@ export default class Game501 extends React.Component {
                         <Text style={{ color: colors.white, fontSize: 30 }}>Start</Text>
                     </TouchableOpacity>
                 </KeyboardAvoidingView>
+                </TouchableWithoutFeedback>
         );
     }
 }
