@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Image, Alert, KeyboardAvoidingView, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image, Alert, KeyboardAvoidingView, Keyboard, TouchableWithoutFeedback, Platform } from 'react-native';
 import colors from '../assets/Colors'
 import { TextInput } from 'react-native-gesture-handler';
 
@@ -139,10 +139,11 @@ export default class Game501 extends React.Component {
         }
     }
     render() {
+        const behavior = Platform.OS === 'ios' ? "padding": "";
         return (
                 <TouchableWithoutFeedback onPress={()=>Keyboard.dismiss()}>
                 <KeyboardAvoidingView
-                    behavior="padding"
+                    behavior={behavior}
                     enabled={this.state.bool}
                     style={{ ...styles.container, ...this.state.mover }}>
                     <View style={{ ...styles.selector, zIndex: this.state.zIndex, opacity: this.state.opacity }}>
